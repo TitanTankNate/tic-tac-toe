@@ -1,3 +1,12 @@
-* {
-    font-size: 72px;
+.gameboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3,1fr);
+
+    height: 600px;
+    width: 600px;
+}
+
+.grid-square {
+    border: 2px solid black;
 }
