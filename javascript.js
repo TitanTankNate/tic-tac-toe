@@ -27,16 +27,30 @@ const Player = (name, score, lastMove) => {
 
 // FACTORY FUNCTION: BoardSquare
 // Description: 
-const BoardSquare = (elementID, row, col, isOccupied) => {
+const BoardSquare = (elementID, row, col, isOccupied, owner) => {
     // Setters
-    
+    const setElementID = (input) => {elementID = input};
+    const setRow = (input) => {row = input};
+    const setCol = (input) => {col = input};
+    const setIsOccupied = (input) => {isOccupied = input};
+    const setOwner = (input) => {owner = input};
+
     // Getters
+    const getElementID = () => {return elementID};
+    const getRow = () => {return row};
+    const getCol = () => {return col};
+    const getIsOccupied = () => {return isOccupied};
+    const getOwner = () => {return owner};
 
     // Methods
 
     // Returns
     return {
-        elementID, row, col, isOccupied
+        setElementID, getElementID,     // Element ID methods
+        setRow, getRow,                 // Row methods
+        setCol, getCol,                 // Column methods
+        setIsOccupied, getIsOccupied,   // isOccupied methods
+        setOwner, getOwner              // Owner methods
     };
 };
 
@@ -54,7 +68,7 @@ const Board = () => {
     // Getters
     const getBoardArray = () => {return boardArray};
     const getBoardSquareIsOccupied = (elementID) => {
-        return boardArray[(elementID - 1)].isOccupied;
+        return boardArray[(elementID - 1)].getIsOccupied();
     };
 
     // Methods
@@ -65,28 +79,44 @@ const Board = () => {
 
         for (let rowCount=1;rowCount <=3; rowCount++) {
             for (let colCount=1;colCount<=3;colCount++) {
-                newBoardSquare = BoardSquare(elementIDtoAssign,rowCount,colCount, false);
+                newBoardSquare = BoardSquare(elementIDtoAssign,rowCount,colCount, false, "none");
                 boardArray.push(newBoardSquare);
                 elementIDtoAssign++;
             };
         };
     };
 
-    const occupySquare = (occupyID) => {
+    const occupySquare = (occupyID, owner) => {
         // Select the correct element of the array by elementID
         let element = boardArray[(occupyID - 1)];
 
         // If a space is marked as unoccupied, occupy it
-        if (!element.isOccupied) {
-            element.isOccupied = true;
+        if (!element.getIsOccupied()) {
+            element.setIsOccupied(true);
+            element.setOwner(owner);
+            console.log(element.getIsOccupied(), element.getOwner());
         };
     };
+
+    const checkForWin = (recentMove, checkForOwnershipBy) => {
+        let elementToCheck;
+        let constraints = [elementToCheck < 0, elementToCheck > 9];
+
+        // Check SE
+        elementToCheck = parseInt(recentMove) + 4;
+        if (constraints.includes(false)) {
+            console.log(elementToCheck + " out of bounds.");
+        } else {
+            console.log("Checking " + elementToCheck);
+        }
+        console.log(boardArray[elementToCheck].getIsOccupied());
+    }
 
     // Returns
     return {
         boardQuerySelector, 
         getBoardArray, getBoardSquareIsOccupied,
-        createBoard, occupySquare
+        createBoard, occupySquare, checkForWin
     };
 };
 
@@ -98,7 +128,7 @@ const Game = () => {
     // Private variables
     let gameWasReset = true;        // Game reset flag
     let currentMove;                // Currently selected grid
-    let currentPlayer = "player1";      // Current player
+    let currentPlayer = "player1";  // Current player
     
     // Consctructors
     const newBoard = Board();
@@ -131,15 +161,28 @@ const Game = () => {
         } else {
             switch (currentPlayer) {
                 case "player1":
+                    // Process move
                     newPlayer1.setLastMove(event.target.id);
+                    newBoard.occupySquare(event.target.id, "player1");
+                    
+                    // Check for victory
+                    newBoard.checkForWin(newPlayer1.getLastMove(),"player1");
+                    
+                    // Swap to next player
                     currentPlayer = "player2";
                     break;
                 case "player2":
+                    // Process move
                     newPlayer2.setLastMove(event.target.id);
+                    newBoard.occupySquare(event.target.id, "player2");
+                    
+                    // Check for victory
+                    newBoard.checkForWin(newPlayer2.getLastMove(),"player2");
+                    
+                    // Swap to next player
                     currentPlayer = "player1";
                     break;
-            };    
-            newBoard.occupySquare(event.target.id);
+            };
             doMainLoop(currentPlayer);    
         };
 
