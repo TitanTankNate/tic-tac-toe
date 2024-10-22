@@ -98,32 +98,50 @@ const Game = () => {
     // Private variables
     let gameWasReset = true;        // Game reset flag
     let currentMove;                // Currently selected grid
-    let currentPlayer = "CPU";      // Current player
+    let currentPlayer = "player1";      // Current player
     
     // Consctructors
     const newBoard = Board();
-    const newPlayer = Player("Player", 0, "none");
+    const newPlayer1 = Player("player1", 0, "none");
+    const newPlayer2 = Player("player2", 0, "none");
     
     // Methods
     const newGame = () => {
         // Create new gameboard
         newBoard.createBoard();
-        // console.log(newBoard.getBoardArray());
     };
 
     const doMainLoop = (player) => {
         switch (player) {
             case "player1":
                 // Do something with visuals
+                console.log("It's player1's turn.");
                 break;
             case "player2":
-
+                console.log("It's player2's turn.");
                 break;
         };
     };
 
     // Event handlers
     newBoard.boardQuerySelector.addEventListener("click", (event) => {
+        if (newBoard.getBoardSquareIsOccupied(event.target.id)) {
+            console.log("That square is already occupied.");
+            doMainLoop(currentPlayer);
+        } else {
+            switch (currentPlayer) {
+                case "player1":
+                    newPlayer1.setLastMove(event.target.id);
+                    currentPlayer = "player2";
+                    break;
+                case "player2":
+                    newPlayer2.setLastMove(event.target.id);
+                    currentPlayer = "player1";
+                    break;
+            };    
+            newBoard.occupySquare(event.target.id);
+            doMainLoop(currentPlayer);    
+        };
 
     });
 
@@ -133,7 +151,7 @@ const Game = () => {
 
 const newGameInstance = Game();
 newGameInstance.newGame();
-newGameInstance.doMainLoop("CPU");
+newGameInstance.doMainLoop("player1");
 
 
 
