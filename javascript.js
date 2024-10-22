@@ -108,6 +108,11 @@ const ComputerPlayer = (name, score, lastMove, difficulty) => {
 
             // console.log(chosenMoveElementID);
             return chosenMoveElementID;
+        } else {
+            console.log("CPU will pick the next square.");
+            console.log("Player last moved into square " + lastPlayerMove);
+            // Evaluate all adjacent squares for potential win conditions
+
         };
     };
 
@@ -135,7 +140,8 @@ const BoardSquare = (elementID, row, col, isOccupied) => {
 
     // Returns
     return {
-        elementID, row, col, isOccupied};
+        elementID, row, col, isOccupied
+    };
 };
 
 
@@ -145,11 +151,15 @@ const BoardSquare = (elementID, row, col, isOccupied) => {
 const Board = () => {
     // Private variables
     let boardArray = [];
+    const boardQuerySelector= document.querySelector(".gameboard");
 
     // Setters
 
     // Getters
     const getBoardArray = () => {return boardArray};
+    const getBoardSquareIsOccupied = (elementID) => {
+        return boardArray[(elementID - 1)].isOccupied;
+    };
 
     // Methods
     const createBoard = () => {
@@ -173,12 +183,19 @@ const Board = () => {
         // If a space is marked as unoccupied, occupy it
         if (!element.isOccupied) {
             element.isOccupied = true;
-        }
+        };
     };
 
+    const checkSurroundingSquares = (elementIDtoCheck) => {
+
+    };
 
     // Returns
-    return {getBoardArray, createBoard, occupySquare};
+    return {
+        boardQuerySelector, 
+        getBoardArray, getBoardSquareIsOccupied,
+        createBoard, occupySquare, checkSurroundingSquares
+    };
 };
 
 
@@ -187,41 +204,67 @@ const Board = () => {
 // Description:
 const Game = () => {
     // Private variables
-    let gameWasReset = true;
-    let continueGame = false;
-    let currentMove;
+    let gameWasReset = true;        // Game reset flag
+    let currentMove;                // Currently selected grid
+    let currentPlayer = "CPU";      // Current player
     
+    // Consctructors
     const newBoard = Board();
     const newPlayer = Player("Player", 0, "none");
     const newCPU = ComputerPlayer("CPU", 0, "none", 1);
-    let currentPlayer = "CPU";
     
     // Methods
     const newGame = () => {
         // Create new gameboard
         newBoard.createBoard();
         // console.log(newBoard.getBoardArray());
-
-        // Initialize flags
-        continueGame = true;
     };
 
-    const doMainLoop = () => {
-        // while (continueGame) {
-            // TURN SELECTOR / PLAYER SELECTOR
-            switch (currentPlayer) {
-                case "Player":
-                    console.log(`It's ${newPlayer.getName()}'s turn.`);
-                    break;
-                case "CPU":
-                    console.log(`It's ${newCPU.getName()}'s turn.`);
-                    currentMove = newCPU.pickMove(newBoard, "none", true);
-                    newCPU.setLastMove(currentMove);
-                    console.log("Last move: " + newCPU.getLastMove());
-                    break;
-            }
-        // }
+    const doMainLoop = (player) => {
+        switch (player) {
+            case "Player":
+                // Do something with visuals
+                break;
+            case "CPU":
+                console.log(`It's ${newCPU.getName()}'s turn.`);
+                if (gameWasReset) {
+                    console.log("Game was reset.");
+                    currentMove = newCPU.pickMove(newBoard.getBoardArray(), "none", true);
+                    gameWasReset = false;
+                } else {
+                    console.log("Game was not reset.");
+                    currentMove = newCPU.pickMove(newBoard.getBoardArray(), newPlayer.getLastMove(), false);
+                };
+
+                newCPU.setLastMove(currentMove);
+                newBoard.occupySquare(currentMove);
+                console.log("Last move: " + newCPU.getLastMove());
+                currentPlayer = "Player";
+                console.log(`It's ${newPlayer.getName()}'s turn.`);
+                break;
+        };
     };
+
+    // Event handlers
+    newBoard.boardQuerySelector.addEventListener("click", (event) => {
+        // If current player is the human, pick a square, otherwise 
+        // do nothing.
+        if (currentPlayer == "Player") {
+            // If selected square is occupied, inform user and do nothing
+            if(!newBoard.getBoardSquareIsOccupied(event.target.id)) {
+                console.log("Selected square " + event.target.id);
+                newPlayer.setLastMove(event.target.id);
+                currentPlayer = "CPU";
+                newGameInstance.doMainLoop("CPU");
+            } else {
+                console.log("That square is already occupied.");
+                newGameInstance.doMainLoop("Player");
+            };    
+
+        } else {
+            console.log("Not your turn.");
+        }
+    });
 
     // Returns
     return {gameWasReset, newGame, doMainLoop};
@@ -229,7 +272,7 @@ const Game = () => {
 
 const newGameInstance = Game();
 newGameInstance.newGame();
-newGameInstance.doMainLoop();
+newGameInstance.doMainLoop("CPU");
 
 
 
