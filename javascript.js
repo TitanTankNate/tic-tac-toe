@@ -89,39 +89,67 @@ const Board = () => {
     const occupySquare = (occupyID, owner) => {
         // Select the correct element of the array by elementID
         let element = boardArray[(occupyID - 1)];
+        let symbol;
+        const gridSquareToDraw = document.getElementById(occupyID);
 
         // If a space is marked as unoccupied, occupy it
         if (!element.getIsOccupied()) {
             element.setIsOccupied(true);
             element.setOwner(owner);
-            console.log(element.getIsOccupied(), element.getOwner());
         };
+
+        // Select appropriate symbol based off of owner
+        switch (owner) {
+            case "player1":
+                symbol = "X";
+                break;
+            case "player2":
+                symbol = "O";
+                break;
+        };
+
+        gridSquareToDraw.textContent = symbol;
+
     };
 
     const checkForWin = (recentMove, checkForOwnershipBy) => {
+        // The following sub-arrays are all possible win conditions of 
+        // tic-tac-toe. I feel like I could have found a more 
+        // efficient way of doing this, but here it is.
         let winConditionArray = [
             [1, 2, 3], [4, 5, 6], [7, 8, 9],    // Horizontal wins
             [1, 4, 7], [2, 5, 8], [3, 6, 9],    // Vertical wins
             [1, 5, 9], [3, 5, 7]                // Diagonal wins
         ];
-        let currentStatusArray = [1, 2, 4, 7, 9];
+
+        // Import the current state of the board for one player
+        let currentStatusArray = [];
+        boardArray.forEach((square) => {
+            if (square.getOwner() == checkForOwnershipBy) {
+                currentStatusArray.push(square.getElementID());
+            };
+        });
+
+        // Check current status of board for any matching win conditions
         let matches;
 
+        // This loop verifies that the board's status includes
         for(let conditionCount = 0;conditionCount < winConditionArray.length;conditionCount++) {
             matches = 0;
             for(let elem = 0;elem < currentStatusArray.length; elem++) {
                 if (winConditionArray[conditionCount].includes(currentStatusArray[elem])) {
-                    console.log(`elem ${elem} included.`);
                     matches++;
-                    console.log(matches);
                 };
             };
-            console.log("Checking next win condition.");
+
+            // Game over due to player victory
             if (matches == 3) {
-                console.log("WINNER");
-                break;
+                console.log("Game over due to player victory.");
+                // break;
+                return true;
             };
         };
+        return false;
         
     };
 
@@ -140,8 +168,8 @@ const Board = () => {
 const Game = () => {
     // Private variables
     let gameWasReset = true;        // Game reset flag
-    let currentMove;                // Currently selected grid
     let currentPlayer = "player1";  // Current player
+    let turnCount;
     
     // Consctructors
     const newBoard = Board();
@@ -152,18 +180,7 @@ const Game = () => {
     const newGame = () => {
         // Create new gameboard
         newBoard.createBoard();
-    };
-
-    const doMainLoop = (player) => {
-        switch (player) {
-            case "player1":
-                // Do something with visuals
-                console.log("It's player1's turn.");
-                break;
-            case "player2":
-                console.log("It's player2's turn.");
-                break;
-        };
+        turnCount = 0;
     };
 
     // Event handlers
@@ -178,9 +195,6 @@ const Game = () => {
                     newPlayer1.setLastMove(event.target.id);
                     newBoard.occupySquare(event.target.id, "player1");
                     
-                    // Check for victory
-                    newBoard.checkForWin(newPlayer1.getLastMove(),"player1");
-                    
                     // Swap to next player
                     currentPlayer = "player2";
                     break;
@@ -189,25 +203,33 @@ const Game = () => {
                     newPlayer2.setLastMove(event.target.id);
                     newBoard.occupySquare(event.target.id, "player2");
                     
-                    // Check for victory
-                    newBoard.checkForWin(newPlayer2.getLastMove(),"player2");
-                    
                     // Swap to next player
                     currentPlayer = "player1";
                     break;
             };
-            doMainLoop(currentPlayer);    
+            turnCount++;
+            
+            // Check for victory
+            if (newBoard.checkForWin(newPlayer1.getLastMove(),"player1")) {
+                console.log("Player 1 wins");
+            } else if (newBoard.checkForWin(newPlayer2.getLastMove(),"player2")) {
+                console.log("Player 2 wins");
+            } else {
+                if (turnCount == 9) {
+                    console.log("Draw");
+                };
+            };
+
         };
 
     });
 
     // Returns
-    return {gameWasReset, newGame, doMainLoop};
+    return {gameWasReset, newGame};
 };
 
 const newGameInstance = Game();
 newGameInstance.newGame();
-newGameInstance.doMainLoop("player1");
 
 
 
