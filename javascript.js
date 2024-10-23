@@ -99,18 +99,31 @@ const Board = () => {
     };
 
     const checkForWin = (recentMove, checkForOwnershipBy) => {
-        let elementToCheck;
-        let constraints = [elementToCheck < 0, elementToCheck > 9];
+        let winConditionArray = [
+            [1, 2, 3], [4, 5, 6], [7, 8, 9],    // Horizontal wins
+            [1, 4, 7], [2, 5, 8], [3, 6, 9],    // Vertical wins
+            [1, 5, 9], [3, 5, 7]                // Diagonal wins
+        ];
+        let currentStatusArray = [1, 2, 4, 7, 9];
+        let matches;
 
-        // Check SE
-        elementToCheck = parseInt(recentMove) + 4;
-        if (constraints.includes(false)) {
-            console.log(elementToCheck + " out of bounds.");
-        } else {
-            console.log("Checking " + elementToCheck);
-        }
-        console.log(boardArray[elementToCheck].getIsOccupied());
-    }
+        for(let conditionCount = 0;conditionCount < winConditionArray.length;conditionCount++) {
+            matches = 0;
+            for(let elem = 0;elem < currentStatusArray.length; elem++) {
+                if (winConditionArray[conditionCount].includes(currentStatusArray[elem])) {
+                    console.log(`elem ${elem} included.`);
+                    matches++;
+                    console.log(matches);
+                };
+            };
+            console.log("Checking next win condition.");
+            if (matches == 3) {
+                console.log("WINNER");
+                break;
+            };
+        };
+        
+    };
 
     // Returns
     return {
