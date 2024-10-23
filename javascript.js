@@ -94,6 +94,7 @@ const Board = () => {
         // Select the correct element of the array by elementID
         let element = boardArray[(occupyID - 1)];
         let symbol;
+        let textColor;
         const gridSquareToDraw = document.getElementById(occupyID);
 
         // If a space is marked as unoccupied, occupy it
@@ -106,14 +107,17 @@ const Board = () => {
         switch (owner) {
             case "player1":
                 symbol = "X";
+                textColor = "var(--accent-color)";
                 break;
             case "player2":
                 symbol = "O";
+                textColor = "var(--font-alternative-color)";
                 break;
         };
 
         // "Draw" symbol to board
         gridSquareToDraw.textContent = symbol;
+        gridSquareToDraw.style.color = textColor;
 
     };
 
@@ -179,17 +183,19 @@ const Game = () => {
     const resultText = document.querySelector(".dialog-text");
     const player1Score = document.getElementById("player1-score");
     const player2Score = document.getElementById("player2-score");
+    const gameOverText = document.querySelector(".floating-text");
     
     // Consctructors
     const newBoard = Board();
-    const newPlayer1 = Player("dumbass", 0, "none");
-    const newPlayer2 = Player("fuckboi", 0, "none");
+    const newPlayer1 = Player("Player 1 [X]", 0, "none");
+    const newPlayer2 = Player("Player 2 [O]", 0, "none");
     
     // Methods
     const newGame = () => {
         // Create new gameboard
         newBoard.createBoard();
         turnCount = 0;
+        gameOverText.hidden = true;
     };
 
     const doMainLoop = (event) => {
@@ -215,18 +221,20 @@ const Game = () => {
         
         // Check for result and create dynamic content to reflect result
         if (newBoard.checkForWin(newPlayer1.getLastMove(),"player1")) {
-            resultText.textContent = `${newPlayer1.getName()} wins! Play again?`;
+            resultText.textContent = `${newPlayer1.getName()} wins!\nPlay again?`;
             newPlayer1.setScore(newPlayer1.getScore() + 1);
             player1Score.textContent = newPlayer1.getScore();
             dialogBox.showModal();
         } else if (newBoard.checkForWin(newPlayer2.getLastMove(),"player2")) {
-            resultText.textContent = `${newPlayer2.getName()} wins! Play again?`;
+            resultText.textContent = `${newPlayer2.getName()} wins!\nPlay again?`;
             newPlayer2.setScore(newPlayer2.getScore() + 1);
             player2Score.textContent = newPlayer2.getScore();
             dialogBox.showModal();
         } else {
             if (turnCount == 9) {
-                resultText.textContent = `Draw! Play again?`;
+                resultText.textContent = `Strange game, Professor.\n
+                The only winning move is not to play.\n
+                Exercise futility once more?`;
                 dialogBox.showModal();
             };
         };
@@ -249,6 +257,7 @@ const Game = () => {
             case "quit-button":
                 dialogBox.close();
                 gameOver = true;
+                gameOverText.hidden = false;
                 break;
             case "continue-button":
                 dialogBox.close();

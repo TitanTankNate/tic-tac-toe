@@ -9,17 +9,17 @@
 </head>
 <body>
     <div class="header">
-        <div class="title">Tic-Tac-Toe</div>
-        <div class="subtitle">An exercise in futility</div>
+        <h1 class="title">Tic-Tac-Toe</h1>
+        <h2 class="subtitle">An exercise in futility</h2>
     </div>
     <div class="content">
         <div class="scorecard-container">
-            <div class="player1-scorecard">
-                <p class="player-name">Player 1</p>
+            <div class="player-scorecard" id="player1-scorecard">
+                <p class="player-name" id = "player1-name">Player 1</p>
                 <p class = "player-score" id="player1-score">0</p>
             </div>
-            <div class="player2-scorecard">
-                <p class="player-name">Player 2</p>
+            <div class="player-scorecard" id="player2-scorecard">
+                <p class="player-name" id="player2-name">Player 2</p>
                 <p class = "player-score" id="player2-score">0</p>                
             </div>
         </div>
@@ -35,12 +35,16 @@
             <div class="grid-square bottom-row right-column" id="9"></div>
         </div>
         <dialog id="game-result-dialog">
-            <div class="dialog-header">Game Result Dialog</div>
+            <div class="dialog-header">Round Over</div>
             <p class="dialog-text">Game result text.</p>
-             <button class="dialog-button" id="quit-button">Quit</button>
              <button class="dialog-button" id="continue-button">Play Again</button>
+             <button class="dialog-button" id="quit-button">Quit</button>
         </dialog>
-        <div class="floating-text">GAME OVER</div>    
+        <div class="floating-text">GAME OVER</div>
+        <button 
+        class="floating-button"
+        onclick="window.open('https://www.imdb.com/title/tt0086567/?ref_=nv_sr_srsg_0_tt_8_nm_0_in_0_q_wargames')">
+        Play "Global Thermonuclear War" instead</button>    
     </div>
     <!-- O R I G I N A L   W R I T E   U P
     For tic-tac-toe, for efficiency, the entire game board and its
@@ -53,5 +57,10 @@
     - Xs and Os placed into those grid sections
     - Player and CPU scores
     - Button for restarting the session and scores -->
+
+    <!-- Font preconnects-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Geo:ital@0;1&display=swap" rel="stylesheet">
 </body>
 </html>

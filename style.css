@@ -1,3 +1,164 @@
+/* FONT IMPORT */
+/* All fonts from fonts.google.com */
+
+.bruno-ace-sc-regular {
+    font-family: "Bruno Ace SC", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  .geo-regular {
+    font-family: "Geo", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  .geo-regular-italic {
+    font-family: "Geo", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+  }
+  
+  
+  /* CSS RESET AND NORMALIZATION   CSS CSS CSS CSS CSS CSS CSS CSS CSS  */
+  /* Remove padding */
+  body, ul, p, a {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+  }
+  
+  /* Remove hyperlink text decoration */
+  a {
+      text-decoration: none;
+      color: inherit;
+  }
+  
+  /* Remove bullets from list items */
+  ul {
+      list-style-type: none;
+  }
+  
+  
+  
+  
+  
+  /* THEME TH TH  TH  TH  TH  TH  TH  TH  TH  TH  TH  TH  TH  TH  TH   */
+  
+  :root {
+      /* Colors */
+      --background-color: #30304C;
+      --background-color-darker: #1F1F32;
+      --accent-color: #4D9DE0;
+      --accent-highlight-color: #FFFFFF;
+      --valid-color: #e1ff67;
+      --font-default-color: #F7F7FF;
+      --font-alternative-color: #B9314F;
+  }
+  
+  body {
+      /* Font and color declarations */
+      background-color: var(--background-color, darkgrey);
+  }
+  
+  h1, h2, h3, h4, h5, a, p, input {
+      /* Font and color declarations */
+      font-family: "Bruno Ace SC", sans-serif;
+      color: var(--font-default-color, white);
+  
+      /* CBPM */
+      padding: 0;
+      margin: 0;
+  }
+  
+  p {
+      /* Font and color declarations */
+      font-family: "Geo", sans-serif;
+  }
+  
+  a {
+      /* Font and color declarations */
+      color: var(--font-alternative-color, white);
+  }
+
+  button {
+    /* Font and color declarations */
+    font-family: "Geo", sans-serif;
+  }
+
+
+
+  /* HEADER H   H   H   H   H   H   H   H   H   H   H   H   H   H   H*/
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  h1 {
+    font-size: 4rem;
+    border-bottom: 2px solid var(--accent-highlight-color);
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+
+
+  /* CONTENT CONTAINER CC   CC  CC  CC  CC  CC  CC  CC  CC  CC  CC   */
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+
+
+  /* SCOREBOARD SB  SB  SB  SB  SB  SB  SB  SB  SB  SB  SB  SB  SB   */
+  .scorecard-container {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+
+    width: fit-content;
+
+    border: 2px solid var(--accent-highlight-color);
+    padding: 12px 50px;
+    margin: 25px;
+  }
+
+  .player-scorecard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .player-name {
+    font-size: 2.5rem;
+    font-weight: 800;
+
+    text-shadow: 1px 1px 2px var(--font-default-color);
+}
+
+  .player-score {
+    font-size: 4rem;
+    font-weight: 600;
+
+    text-shadow: 1px 1px 2px var(--font-default-color);
+}
+
+  #player1-name, #player1-score {
+    color: var(--accent-color);
+  }
+
+  #player2-name, #player2-score {
+    color: var(--font-alternative-color);
+  }
+
+
+
+  /* GAMEBOARD  GB  GB  GB  GB  GB  GB  GB  GB  GB  GB  GB  GB  GB   */
 .gameboard {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -7,6 +168,94 @@
     width: 600px;
 }
 
+.left-column, .middle-column {
+    border-right: 4px solid var(--accent-highlight-color);
+}
+
+.right-column, .middle-column {
+    border-left: 4px solid var(--accent-highlight-color);
+}
+
+.top-row, .middle-row {
+    border-bottom: 4px solid var(--accent-highlight-color);
+}
+
+.bottom-row, .middle-row {
+    border-top: 4px solid var(--accent-highlight-color);
+}
+
 .grid-square {
-    border: 2px solid black;
+    align-content: center;
+    text-align: center;
+
+    font-family: "Bruno Ace SC", sans-serif;
+    font-size: 8rem;
+    text-shadow: 0px 0px 4px var(--font-default-color);
+}
+
+
+
+/* DIALOG BOX   DB  DB  DB  DB  DB  DB  DB  DB  DB  DB  DB  DB  DB   */
+#game-result-dialog[open] {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--font-default-color);
+    
+    width: 400px;
+    height: fit-content;
+
+    padding: 0;
+}
+
+#game-result-dialog .dialog-header {
+    font-family: "Bruno Ace SC", sans-serif;
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--font-default-color);
+    background-color: var(--background-color-darker);
+
+    padding: 6px 12px;
+}
+
+#game-result-dialog .dialog-text {
+    font-size: 1.2rem;
+    color: var(--background-color-darker);
+
+    height: 75px;
+
+    padding: 4px 18px;
+}
+
+#game-result-dialog .dialog-button {
+    font-size: 1.2rem;
+    margin: 4px 12px;
+}
+
+
+
+/* EASTER EGGS */
+.floating-text {
+    font-family: "Geo";
+    font-size: 10rem;
+    font-weight: 800;
+    color: darkred;
+    text-shadow: 0 0 20px black;
+
+    position: fixed;
+    top: 435px;
+
+    margin: auto auto;
+}
+
+.floating-button {
+    opacity: 10%;
+
+    position: fixed;
+    top: 100px;
+    left: 100px;
+
+}
+
+.floating-button:hover {
+    opacity: 100%;
 }
