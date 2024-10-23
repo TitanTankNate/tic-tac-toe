@@ -1,5 +1,6 @@
-// FACTORY FUNCTION: Player
-// Description: The Player object contains
+// FACTORY FUNCTION:    Player
+// Description:         The Player object contains properties and methods for 
+// instantiation of players for the tic-tac-toe game.
 const Player = (name, score, lastMove) => {
     // Setters
     const setName = (input) => {name = input};
@@ -16,17 +17,21 @@ const Player = (name, score, lastMove) => {
 
     // Returns
     return {
-        setName, getName,           // 'name' methods
-        setScore, getScore,         // 'score' methods
-        setLastMove, getLastMove,    // 'move' methods
-        getPlayerDetails
+        setName, getName,           // name methods
+        setScore, getScore,         // score methods
+        setLastMove, getLastMove,   // move methods
+        getPlayerDetails            // debug details method
     };
 }
 
 
+// ----------------------------------------------------------------- //
 
-// FACTORY FUNCTION: BoardSquare
-// Description: 
+
+// FACTORY FUNCTION:    BoardSquare
+// Description:         The BoardSquare object is a child object of the Board 
+// object, and provides child parameters for accessing the individual 
+// grid squares during the game.
 const BoardSquare = (elementID, row, col, isOccupied, owner) => {
     // Setters
     const setElementID = (input) => {elementID = input};
@@ -35,6 +40,7 @@ const BoardSquare = (elementID, row, col, isOccupied, owner) => {
     const setIsOccupied = (input) => {isOccupied = input};
     const setOwner = (input) => {owner = input};
 
+
     // Getters
     const getElementID = () => {return elementID};
     const getRow = () => {return row};
@@ -42,28 +48,36 @@ const BoardSquare = (elementID, row, col, isOccupied, owner) => {
     const getIsOccupied = () => {return isOccupied};
     const getOwner = () => {return owner};
 
+
     // Methods
+
 
     // Returns
     return {
-        setElementID, getElementID,     // Element ID methods
-        setRow, getRow,                 // Row methods
-        setCol, getCol,                 // Column methods
+        setElementID, getElementID,     // elementID methods
+        setRow, getRow,                 // row methods
+        setCol, getCol,                 // column methods
         setIsOccupied, getIsOccupied,   // isOccupied methods
-        setOwner, getOwner              // Owner methods
+        setOwner, getOwner              // owner methods
     };
 };
 
 
+// ----------------------------------------------------------------- //
 
-// FACTORY FUNCTION: Board
-// Description: 
+
+// FACTORY FUNCTION:    Board
+// Description:         The Board object contains the logic for "painting" the 
+// board with the Xs and Os, triggering "occupation" of BoardSquare 
+// elements, and checking for win conditons.
 const Board = () => {
     // Private variables
     let boardArray = [];
     const boardQuerySelector= document.querySelector(".gameboard");
 
+
     // Setters
+
 
     // Getters
     const getBoardArray = () => {return boardArray};
@@ -71,16 +85,26 @@ const Board = () => {
         return boardArray[(elementID - 1)].getIsOccupied();
     };
 
-    // Methods
+
+    // METHODS ---------------------------
+
+    // Private Method:  createBoard
+    // Description:     This function handles re-initialization of the 
+    // internal board array, and handles instantiation of BoardSquare 
+    // child objects.
     const createBoard = () => {
         // Private variables
         let elementIDtoAssign = 1;
         let newBoardSquare;
 
+        // Re-initialize the array if this method is called on an 
+        // already-existing array
         if (boardArray.length != 0) {
             boardArray = [];
         };
 
+        // Iterate across each row and column to create the nine grid 
+        // squares, instantiating BoardSquare objects.
         for (let rowCount=1;rowCount <=3; rowCount++) {
             for (let colCount=1;colCount<=3;colCount++) {
                 newBoardSquare = BoardSquare(elementIDtoAssign,rowCount,colCount, false, "none");
@@ -90,6 +114,12 @@ const Board = () => {
         };
     };
 
+
+    // Private Method:  occupySquare
+    // Description:     This function takes in an elementID and 
+    // designated owner, and assigns that BoardSquare object to them.
+    // This function also handles "painting" or "drawing" the game
+    // board as it's updated.
     const occupySquare = (occupyID, owner) => {
         // Select the correct element of the array by elementID
         let element = boardArray[(occupyID - 1)];
@@ -121,6 +151,10 @@ const Board = () => {
 
     };
 
+    // Private Method:  checkForWin
+    // Description:     This function takes in a desired owner whose 
+    // state of the board we'd like to evaluate, and then checks their 
+    // board state against all possible win conditions.
     const checkForWin = (recentMove, checkForOwnershipBy) => {
         // The following sub-arrays are all possible win conditions of 
         // tic-tac-toe. I feel like I could have found a more 
@@ -156,9 +190,11 @@ const Board = () => {
                 return true;
             };
         };
+
         return false;
         
     };
+
 
     // Returns
     return {
@@ -169,9 +205,13 @@ const Board = () => {
 };
 
 
+// ----------------------------------------------------------------- //
 
-// FACTORY FUNCTION: Game
-// Description:
+
+// FACTORY FUNCTION:    Game
+// Description:         The Game object houses the main loop and 
+// iterative logic, as well as event handling and manipulation of 
+// dynamic DOM content.
 const Game = () => {
     // Private variables
     let gameWasReset = true;        // Game reset flag
@@ -185,12 +225,18 @@ const Game = () => {
     const player2Score = document.getElementById("player2-score");
     const gameOverText = document.querySelector(".floating-text");
     
+
     // Consctructors
     const newBoard = Board();
     const newPlayer1 = Player("Player 1 [X]", 0, "none");
     const newPlayer2 = Player("Player 2 [O]", 0, "none");
     
-    // Methods
+
+    // METHODS ---------------------------
+    // Private Method:  newGame
+    // Description:     This function creates a new instance of the 
+    // Board object, resets the turn counter, and removes unneeded 
+    // dynamic content.
     const newGame = () => {
         // Create new gameboard
         newBoard.createBoard();
@@ -198,7 +244,12 @@ const Game = () => {
         gameOverText.hidden = true;
     };
 
+
+    // Private Method:  doMainLoop
+    // Description:     This function is the core gameplay loop. All 
+    // gameplay is based completely on event listener triggers.
     const doMainLoop = (event) => {
+        // Select the current player
         switch (currentPlayer) {
             case "player1":
                 // Process move
@@ -221,16 +272,27 @@ const Game = () => {
         
         // Check for result and create dynamic content to reflect result
         if (newBoard.checkForWin(newPlayer1.getLastMove(),"player1")) {
+            // Check for win
             resultText.textContent = `${newPlayer1.getName()} wins!\nPlay again?`;
+            
+            // Update score
             newPlayer1.setScore(newPlayer1.getScore() + 1);
             player1Score.textContent = newPlayer1.getScore();
+            
+            // Confirm continuation with user
             dialogBox.showModal();
         } else if (newBoard.checkForWin(newPlayer2.getLastMove(),"player2")) {
+            // Check for win
             resultText.textContent = `${newPlayer2.getName()} wins!\nPlay again?`;
+
+            // Update score
             newPlayer2.setScore(newPlayer2.getScore() + 1);
             player2Score.textContent = newPlayer2.getScore();
+
+            // Confirm continuation with user
             dialogBox.showModal();
         } else {
+            // If no grid squares remain, terminate the round
             if (turnCount == 9) {
                 resultText.textContent = `Strange game, Professor.\n
                 The only winning move is not to play.\n
@@ -240,7 +302,9 @@ const Game = () => {
         };
     }
 
-    // Event handlers
+
+    // EVENT HANDLERS ---------------------------
+    // Listener: Clicking BoardSquare objects
     newBoard.boardQuerySelector.addEventListener("click", (event) => {
         if (!gameOver) {
             if (newBoard.getBoardSquareIsOccupied(event.target.id)) {
@@ -252,6 +316,7 @@ const Game = () => {
 
     });
 
+    // Listener: Clicking dialog box objects
     dialogBox.addEventListener("click", (event) => {
         switch (event.target.id) {
             case "quit-button":
@@ -277,6 +342,10 @@ const Game = () => {
     // Returns
     return {gameWasReset, newGame};
 };
+
+
+
+
 
 // GLOBAL LOOP
 const newGameInstance = Game();
