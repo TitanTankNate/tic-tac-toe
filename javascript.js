@@ -187,7 +187,6 @@ const Game = () => {
     newBoard.boardQuerySelector.addEventListener("click", (event) => {
         if (newBoard.getBoardSquareIsOccupied(event.target.id)) {
             console.log("That square is already occupied.");
-            doMainLoop(currentPlayer);
         } else {
             switch (currentPlayer) {
                 case "player1":
@@ -228,6 +227,7 @@ const Game = () => {
     return {gameWasReset, newGame};
 };
 
+// GLOBAL LOOP
 const newGameInstance = Game();
 newGameInstance.newGame();
 
