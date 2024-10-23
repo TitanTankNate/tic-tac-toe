@@ -1,5 +1,5 @@
 // FACTORY FUNCTION: Player
-// Description: 
+// Description: The Player object contains
 const Player = (name, score, lastMove) => {
     // Setters
     const setName = (input) => {name = input};
@@ -77,6 +77,10 @@ const Board = () => {
         let elementIDtoAssign = 1;
         let newBoardSquare;
 
+        if (boardArray.length != 0) {
+            boardArray = [];
+        };
+
         for (let rowCount=1;rowCount <=3; rowCount++) {
             for (let colCount=1;colCount<=3;colCount++) {
                 newBoardSquare = BoardSquare(elementIDtoAssign,rowCount,colCount, false, "none");
@@ -108,6 +112,7 @@ const Board = () => {
                 break;
         };
 
+        // "Draw" symbol to board
         gridSquareToDraw.textContent = symbol;
 
     };
@@ -144,8 +149,6 @@ const Board = () => {
 
             // Game over due to player victory
             if (matches == 3) {
-                console.log("Game over due to player victory.");
-                // break;
                 return true;
             };
         };
@@ -170,11 +173,17 @@ const Game = () => {
     let gameWasReset = true;        // Game reset flag
     let currentPlayer = "player1";  // Current player
     let turnCount;
+    let gameOver = false;
+
+    const dialogBox = document.getElementById("game-result-dialog");
+    const resultText = document.querySelector(".dialog-text");
+    const player1Score = document.getElementById("player1-score");
+    const player2Score = document.getElementById("player2-score");
     
     // Consctructors
     const newBoard = Board();
-    const newPlayer1 = Player("player1", 0, "none");
-    const newPlayer2 = Player("player2", 0, "none");
+    const newPlayer1 = Player("dumbass", 0, "none");
+    const newPlayer2 = Player("fuckboi", 0, "none");
     
     // Methods
     const newGame = () => {
@@ -183,44 +192,77 @@ const Game = () => {
         turnCount = 0;
     };
 
+    const doMainLoop = (event) => {
+        switch (currentPlayer) {
+            case "player1":
+                // Process move
+                newPlayer1.setLastMove(event.target.id);
+                newBoard.occupySquare(event.target.id, "player1");
+                
+                // Swap to next player
+                currentPlayer = "player2";
+                break;
+            case "player2":
+                // Process move
+                newPlayer2.setLastMove(event.target.id);
+                newBoard.occupySquare(event.target.id, "player2");
+                
+                // Swap to next player
+                currentPlayer = "player1";
+                break;
+        };
+        turnCount++;
+        
+        // Check for result and create dynamic content to reflect result
+        if (newBoard.checkForWin(newPlayer1.getLastMove(),"player1")) {
+            resultText.textContent = `${newPlayer1.getName()} wins! Play again?`;
+            newPlayer1.setScore(newPlayer1.getScore() + 1);
+            player1Score.textContent = newPlayer1.getScore();
+            dialogBox.showModal();
+        } else if (newBoard.checkForWin(newPlayer2.getLastMove(),"player2")) {
+            resultText.textContent = `${newPlayer2.getName()} wins! Play again?`;
+            newPlayer2.setScore(newPlayer2.getScore() + 1);
+            player2Score.textContent = newPlayer2.getScore();
+            dialogBox.showModal();
+        } else {
+            if (turnCount == 9) {
+                resultText.textContent = `Draw! Play again?`;
+                dialogBox.showModal();
+            };
+        };
+    }
+
     // Event handlers
     newBoard.boardQuerySelector.addEventListener("click", (event) => {
-        if (newBoard.getBoardSquareIsOccupied(event.target.id)) {
-            console.log("That square is already occupied.");
-        } else {
-            switch (currentPlayer) {
-                case "player1":
-                    // Process move
-                    newPlayer1.setLastMove(event.target.id);
-                    newBoard.occupySquare(event.target.id, "player1");
-                    
-                    // Swap to next player
-                    currentPlayer = "player2";
-                    break;
-                case "player2":
-                    // Process move
-                    newPlayer2.setLastMove(event.target.id);
-                    newBoard.occupySquare(event.target.id, "player2");
-                    
-                    // Swap to next player
-                    currentPlayer = "player1";
-                    break;
-            };
-            turnCount++;
-            
-            // Check for victory
-            if (newBoard.checkForWin(newPlayer1.getLastMove(),"player1")) {
-                console.log("Player 1 wins");
-            } else if (newBoard.checkForWin(newPlayer2.getLastMove(),"player2")) {
-                console.log("Player 2 wins");
+        if (!gameOver) {
+            if (newBoard.getBoardSquareIsOccupied(event.target.id)) {
+                console.log("That square is already occupied.");
             } else {
-                if (turnCount == 9) {
-                    console.log("Draw");
-                };
-            };
-
+                doMainLoop(event);
+            };    
         };
 
+    });
+
+    dialogBox.addEventListener("click", (event) => {
+        switch (event.target.id) {
+            case "quit-button":
+                dialogBox.close();
+                gameOver = true;
+                break;
+            case "continue-button":
+                dialogBox.close();
+
+                // Reset the gameboard
+                newBoard.createBoard();
+                turnCount = 0;
+                currentPlayer = "player1";
+                const allSquares = document.querySelectorAll(".grid-square");
+                allSquares.forEach((square) => {
+                    square.textContent = "";
+                });
+                break;
+        };
     });
 
     // Returns

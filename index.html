@@ -13,6 +13,16 @@
         <div class="subtitle">An exercise in futility</div>
     </div>
     <div class="content">
+        <div class="scorecard-container">
+            <div class="player1-scorecard">
+                <p class="player-name">Player 1</p>
+                <p class = "player-score" id="player1-score">0</p>
+            </div>
+            <div class="player2-scorecard">
+                <p class="player-name">Player 2</p>
+                <p class = "player-score" id="player2-score">0</p>                
+            </div>
+        </div>
         <div class="gameboard">
             <div class="grid-square top-row left-column" id="1"></div>
             <div class="grid-square top-row middle-column" id="2"></div>
@@ -24,12 +34,13 @@
             <div class="grid-square bottom-row middle-column" id="8"></div>
             <div class="grid-square bottom-row right-column" id="9"></div>
         </div>
-        <dialog class="game-result-dialog">
+        <dialog id="game-result-dialog">
             <div class="dialog-header">Game Result Dialog</div>
             <p class="dialog-text">Game result text.</p>
              <button class="dialog-button" id="quit-button">Quit</button>
              <button class="dialog-button" id="continue-button">Play Again</button>
-        </dialog>    
+        </dialog>
+        <div class="floating-text">GAME OVER</div>    
     </div>
     <!-- O R I G I N A L   W R I T E   U P
     For tic-tac-toe, for efficiency, the entire game board and its
